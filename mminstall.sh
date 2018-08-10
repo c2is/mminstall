@@ -44,6 +44,7 @@ npm=$(npm help &> /dev/null)
 if [ "$?" -ne 0 ]; 
 	then 
 		echolor r "npm n'est pas installé sur votre machine, impossible de procéder à l'installation de marmite$npm"; 
+		exit
 fi
 
 npm install
