@@ -2,6 +2,12 @@
 if [ "$(uname)" != "Linux" ]; then rpath=`readlink "$0"`; else rpath=`readlink -f "$0"`; fi;
 abs_path=$(dirname "$rpath")
 
+if [ "$(uname)" == "Darwin" ]; then
+        sed_compat=" \"\" "
+else
+        sed_compat=""
+fi
+
 function echolor () {
 	red="\033[31m"
 	green='\033[32m'
@@ -26,7 +32,7 @@ function echolor () {
 	echo -e $color$2$std
 }
 
-if [ ! -z "$(ls -A $abs_path)" ]; then
+if [ ! -z "$(ls -A .)" ]; then
    echolor r "Ce répertoire n'est pas vide, impossible d'installer marmite ici."
    exit
 fi
@@ -49,7 +55,25 @@ fi
 
 npm install
 
-node marmite-config.js && gulp init && gulp
+# ce script ne pouvant pas tourner dans mingw (le processus n'est jaamais récupéré...)
+# node marmite-config.js
+# on fait e boulto en bash
+echolor y 'Nom du projet (ex. Marmite) : '
+read -p "" real_name
+echolor y 'Nom court du projet (variable JS donc camelCase) : '
+read -p "" js_name
+echolor y 'Dossier de la preprod inté (ex. marmite)'
+read -p "" folder_name
+
+perl -pi -e 's/"name": "marmite"/"name": "'$js_name'"/g' package.json
+perl -pi -e 's/"projectRealName": "Marmite"/"projectRealName": "'$real_name'"/g' package.json
+perl -pi -e 's/"projectFolderName": "marmite"/"projectFolderName": "'$folder_name'"/g' package.json
+
+perl -pi -e 's/projectRealName = "Marmite"/projectRealName = "'$real_name'"/g' marmite-src/views/layout/use/marmiteConfigData.twig
+perl -pi -e 's/projectJsName = "marmite"/projectJsName = "'$js_name'"/g' marmite-src/views/layout/use/marmiteConfigData.twig
+
+gulp init
+gulp
 
 read -p "Souhaitez-vous cloner un projet ici ? [y,N] " resp
 if [ "$resp" != "y" ]; then 
