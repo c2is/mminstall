@@ -51,7 +51,7 @@ npm install
 node marmite-config.js && gulp init && gulp
 
 read -p "Souhaitez-vous cloner un projet ici ? [y,N] " resp
-if [ $resp != "y" ]; then 
+if [ "$resp" != "y" ]; then 
 	echo "Ok, ok, on oublie..."; 
 else
 		read -p "Url du repository (format ssh : git@github.com:c2is/XXX.git par exemple) : " giturl
