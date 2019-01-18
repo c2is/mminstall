@@ -37,7 +37,7 @@ if [ ! -z "$(ls -A .)" ]; then
    exit
 fi
 
-git clone --depth=1 --branch=master git@gitlab.c2is.fr:marmite.git
+git clone --depth=1 --branch=master git@gitlab.acti.fr:acti/marmite.git
 rm -rf ./marmite/.git
 cd marmite
 mv .[!.]* ../
